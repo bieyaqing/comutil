@@ -4,6 +4,7 @@ var gulp = require('gulp');
 var sass = require('gulp-sass');
 var concat = require('gulp-concat-multi');
 var inject = require('gulp-inject');
+var imagemin = require('gulp-imagemin');
 var removeHtmlComments = require('gulp-remove-html-comments');
 var webserver = require('gulp-webserver');
 
@@ -26,6 +27,13 @@ gulp.task('build-lib', function() {
 	.pipe(gulp.dest(DESC+'/lib'));
 });
 
+gulp.task('build-media', function() {
+	console.log("build-media");
+	return gulp.src(SRC+'/media/**/*.png')
+	.pipe(imagemin())
+	.pipe(gulp.dest(DESC+'/media'));
+});
+
 gulp.task('build-sass', function() {
 	console.log("build-sass");
 	return gulp.src(SRC+'/sass/**/*.scss')
@@ -40,7 +48,7 @@ gulp.task('build-css', ['build-sass'], function() {
 gulp.task('build-js', function() {
 	console.log("build-js");
 	return concat({
-		'app.js': [SRC+'/js/function.js', SRC+'/js/app.js', SRC+'/js/ctrl.root.js']
+		'app.js': [SRC+'/js/function.js', SRC+'/js/app.js', SRC+'/js/ctrl.root.js', SRC+'/js/filter.js']
 	})
 	.pipe(gulp.dest(DESC+'/js'));
 });
@@ -51,7 +59,25 @@ gulp.task('build-html', function() {
 	.pipe(gulp.dest(DESC));
 });
 
-gulp.task('build', ['build-lib', 'build-css', 'build-js', 'build-html'], function() {
+gulp.task('build-html-2', ['build-html'], function() {
+	console.log("build-html-2");
+	var target = gulp.src(DESC+'/index.html'); 
+	var sources = gulp.src([
+		DESC+'/**/bootstrap.min.css',
+		DESC+'/**/*.css',
+		DESC+'/**/jquery.min.js',
+		DESC+'/**/bootstrap.min.js',
+		DESC+'/**/angular.min.js',
+		DESC+'/**/angular-route.min.js',
+		DESC+'/**/*.js'
+	], {read: false});
+
+	return target.pipe(inject(sources))
+	.pipe(removeHtmlComments())
+	.pipe(gulp.dest(DESC));
+});
+
+gulp.task('build', ['build-lib', 'build-media', 'build-css', 'build-js', 'build-html'], function() {
 	console.log("build");
 	var target = gulp.src(DESC+'/index.html'); 
 	var sources = gulp.src([
@@ -69,7 +95,13 @@ gulp.task('build', ['build-lib', 'build-css', 'build-js', 'build-html'], functio
 	.pipe(gulp.dest(DESC));
 });
 
-gulp.task('serve', ['build'], function() {
+gulp.task('watch', function() {
+	gulp.watch(SRC+'/sass/**/*.scss', ['build-css']); 
+	gulp.watch(SRC+'/js/**/*.js', ['build-js']);
+	gulp.watch(SRC+'/**/*.html', ['build-html-2']);
+});
+
+gulp.task('serve', ['build', 'watch'], function() {
 	return gulp.src('')
 	.pipe(webserver({
 		livereload: true,

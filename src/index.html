@@ -2,13 +2,59 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="media/img/favicon.png">
 <title>Com Util</title>
 <!-- inject:css -->
 <!-- endinject -->
 </head>
 <body ng-app="COMUTIL">
+	<!-- Page Header -->
+	<nav class="navbar navbar-default yq-navbar">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/">
+					<img src="media/img/icon.png">
+				</a>
+			</div>
+			<div class="collapse navbar-collapse" id="navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li ng-repeat="item in param.menu.left" ng-class="item.sublink|is_css:'dropdown'">
+						<a ng-href="{{item.link}}" target="_self" ng-class="item.sublinks|is_css:'dropdown-toggle'" data-toggle="{{item.sublinks|is_css:'dropdown'}}" role="{{item.sublinks|is_css:'button'}}" aria-haspopup="{{item.sublinks|is_css:'false'}}" ng-bind="item.name"></a>
+						<ul ng-show="item.sublinks" class="dropdown-menu">
+							<li ng-repeat="subitem in item.sublinks">
+								<a ng-href="{{subitem.link}}" ng-bind="subitem.name"></a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<form class="navbar-form navbar-left">
+					<div class="form-group">
+						<input type="text" class="form-control input-sm" placeholder="Search">
+					</div>
+					<button type="submit" class="btn btn-default btn-sm">Submit</button>
+				</form>
+				<ul class="nav navbar-nav navbar-right">
+					<li ng-repeat="item in param.menu.right" ng-class="item.sublink|is_css:'dropdown'">
+						<a ng-href="{{item.link}}" target="_self" ng-class="item.sublinks|is_css:'dropdown-toggle'" data-toggle="{{item.sublinks|is_css:'dropdown'}}" role="{{item.sublinks|is_css:'button'}}" aria-haspopup="{{item.sublinks|is_css:'false'}}" ng-bind="item.name"></a>
+						<ul ng-show="item.sublinks" class="dropdown-menu">
+							<li ng-repeat="subitem in item.sublinks">
+								<a ng-href="{{subitem.link}}" ng-bind="subitem.name"></a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
 	<!-- Page Content -->
 	<ng-view class="main-view"></ng-view>
+	<!-- Page Footer -->
+
 <!-- inject:js -->
 <!-- endinject -->
 </body>
